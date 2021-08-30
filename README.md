@@ -23,6 +23,8 @@ We used Nvidia GPU Cloud for conducting our experiments. We used the 'nvcr.io/nv
 ## Datasets
 
 We used VoxCeleb2 dataset for training and VoxCeleb1 dataset for test with three evaluation trials. 
+For data augmentation, We used  room impulse response simulation and MUSAN corpus.
+We referenced the data augementation code at [here]( https://github.com/clovaai/voxceleb_trainer )
 
 
 # Training
