@@ -34,7 +34,8 @@ We used VoxCeleb2 dataset for training and VoxCeleb1 dataset for test with three
 아래 사항들로 현 프로젝트에 관한 모듈들을 설치할 수 있습니다.
 
 ```
-예시
+Go into run directory
+./run.sh
 ```
 
 # Test
