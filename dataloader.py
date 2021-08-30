@@ -56,58 +56,7 @@ def get_train_loader(args, loader_args):
 	)
 	return trnset_gen, trnset_sampler
 
-def get_eval_loader(args, loader_args):
-	
-	l_vox1_all = loader_args['vox1_all_lines']
-	l_vox1_eval = loader_args['vox1_eval_lines']
-	l_nb_eval_samp = loader_args['list_eval_nb_sample']
-	l_evlset_gen = []
-
-	# define vox1 all generators
-	evlset = EvaluationSet(
-		l_utt=l_vox1_all,
-		nb_seg=args.nb_eval_utt,
-		nb_samp=args.nb_samp,
-		base_dir=args.DB_vox1_all
-	)
-	evlset_sampler = torch.utils.data.DistributedSampler(evlset, shuffle=False)
-
-	evlset_gen = data.DataLoader(
-		evlset,
-		batch_size=args.bs // 10,
-		shuffle=False,
-		pin_memory=True,
-		drop_last=False,
-		num_workers=args.nb_worker,
-		sampler=evlset_sampler,
-	)
-	l_evlset_gen.append(evlset_gen)
-
-	# define vox1 eval generators per nb_sample
-	for ns in l_nb_eval_samp:
-		evlset = EvaluationSet(
-			l_utt=l_vox1_eval,
-			nb_seg=args.nb_eval_utt,
-			nb_samp=args.nb_samp,
-			base_dir=args.DB_vox1_eval,
-			nb_split = ns
-		)
-		evlset_sampler = torch.utils.data.DistributedSampler(evlset, shuffle=False)
-
-		evlset_gen = data.DataLoader(
-			evlset,
-			batch_size=args.bs // 10,
-			shuffle=False,
-			pin_memory=True,
-			drop_last=False,
-			num_workers=args.nb_worker,
-			sampler=evlset_sampler,
-		)
-		l_evlset_gen.append(evlset_gen)
-	return l_evlset_gen
-
-
-def get_vox1_eval_loader(args, loader_args):
+def get_vox1_eval_loader_list(args, loader_args):
 	
 	l_vox1_eval = loader_args['vox1_eval_lines']
 	l_nb_eval_samp = loader_args['list_eval_nb_sample']

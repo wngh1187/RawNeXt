@@ -21,12 +21,12 @@ def get_args():
     #dir 
     parser.add_argument('-save_dir', type = str, default = '/source/ECAPA_RawNet2/')
     parser.add_argument('-DB_vox2', type = str, default = '/DB2/VoxCeleb2/')
-    parser.add_argument('-DB_vox1_all', type = str, default = '/DB2/VoxCeleb1/vox1_wav')
-    parser.add_argument('-DB_vox1_eval', type = str, default = '/DB2/VoxCeleb1/vox1_test_wav')
+    parser.add_argument('-DB_vox1_all', type = str, default = '/DB2/VoxCeleb1')
+    parser.add_argument('-DB_vox1_eval', type = str, default = '/DB2/VoxCeleb1/eval_wav')
     parser.add_argument('-trial_path', type = str, default = '/DB2/VoxCeleb1/vox1_trials')
     parser.add_argument('-musan_path', type=str,   default="/DB2/musan_split/")
     parser.add_argument('-rir_path',  type=str,   default="/DB2/rir_noises/simulated_rirs/")
-    parser.add_argument('-load_model_path', type=str, default="/source/ECAPA_RawNet2/Rawnet2_DLA_013_correct_aam2/weights/checkpoint_69.00_0.0128.pt")
+    parser.add_argument('-load_model_path', type=str, default="./weights/RawNeXt_aam.pt")
 
     #hyper-params
     parser.add_argument('-bs', type = int, default = 60)
@@ -82,7 +82,7 @@ def get_args():
     parser.add_argument('-use_metric_l', type = str2bool, nargs='?', const=True, default = False)
     parser.add_argument('-augment', type = str2bool, nargs='?', const=True, default = False)
     parser.add_argument('-eval_extend', type = str2bool, nargs='?', const=True, default = True)
-    parser.add_argument('-log_metrics', type = str2bool, nargs='?', const=True, default = False)
+    parser.add_argument('-eval', type = str2bool, nargs='?', const=True, default = False)
     
     args = parser.parse_args()
     args.model = {}

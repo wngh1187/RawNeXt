@@ -149,7 +149,6 @@ def get_optimizer(args, model, criterion):
 			)
 	else:
 		raise NotImplementedError('Add other optimizers if needed')
-	if args.load_model: optimizer.load_state_dict(torch.load(args.load_model_opt_dir))
 
 	#set learning rate decay
 	lr_scheduler = None
