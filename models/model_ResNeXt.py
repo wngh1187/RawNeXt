@@ -5,7 +5,6 @@ import torch.nn as nn
 from .modules import *
 
 
-
 class ResNeXt(nn.Module):
 
 	def __init__(
@@ -39,6 +38,8 @@ class ResNeXt(nn.Module):
 
 		self.fc = nn.Linear(channels[5]*2, code_dim)  
 		self.bn_code = nn.BatchNorm1d(code_dim)
+		
+		self.mp = nn.MaxPool1d(3)
 		
 		for m in self.modules():
 			if isinstance(m, nn.Conv1d):
@@ -102,3 +103,22 @@ def get_ResNeXt(levels, channels, code_dim, dsp, up_path, gate, **kwargs):
 		**kwargs
 	)
 	return model
+
+if __name__ == "__main__":
+	from torchsummary import summary
+
+	levels = [1, 1, 1, 2, 2, 1]
+	channels = [128, 128, 256, 256, 512, 512]
+	code_dim = 512
+	model = get_ResNeXt(
+		levels=levels,
+		channels=channels,
+		code_dim=code_dim,
+		dsp = False,
+		up_path = False,
+		gate = False
+	).to("cuda")
+	nb_params = sum([param.view(-1).size()[0] for param in model.parameters()])
+	print("nb_params:{}".format(nb_params))
+
+	summary(model, (1, 59049))

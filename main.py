@@ -49,7 +49,7 @@ def main():
 	loader_args = {}
 
 	#get utt_lists & define labels
-	loader_args['dev_lines'] = sorted(get_utt_list(args.DB_vox2))[:5000]
+	loader_args['dev_lines'] = sorted(get_utt_list(args.DB_vox2))[:10000]
 	loader_args['vox1_all_lines'] = sorted(get_utt_list(args.DB_vox1_all))
 	loader_args['vox1_eval_lines'] = sorted(get_utt_list(args.DB_vox1_eval))  
 	
@@ -104,14 +104,21 @@ def main_worker(gpu, ngpus_per_node, args, loader_args):
 	dist.init_process_group(backend='nccl', init_method='env://', world_size=args.world_size, rank=args.rank)
 
 	trnset_gen, trnset_sampler = get_train_loader(args, loader_args)
-	
+	print('b')
+	for x,y in trnset_gen:
+		print('a')
+		print(x.shape)
+		print(y)
+		exit()
+	print('c')
 	loader_args['list_eval_nb_sample'] =[-1, 1, 2, 5]
 	
 	l_evalset_gen = get_vox1_eval_loader_list(args, loader_args)
 	evalset_gen_vox1_all = get_vox1_all_loader(args, loader_args)
 	
 	args.nb_iter = len(trnset_gen)
-
+	print(args.nb_iter)
+	exit()
 	#define model	
 	module = import_module("models.{}".format(args.module_name))
 	_model = getattr(module, args.model_name)
@@ -141,7 +148,10 @@ def main_worker(gpu, ngpus_per_node, args, loader_args):
 		check_point = torch.load(args.load_model_path)
 		check_point_dict = check_point['model']
 		model.load_state_dict(check_point_dict)
-		
+
+	########################
+	#Test trained model#
+	########################
 	if args.eval:
 
 		###########################################################
@@ -171,7 +181,7 @@ def main_worker(gpu, ngpus_per_node, args, loader_args):
 			d_embeddings_5 = dic_embd(l_all_ID[1], l_embd[3])
 
 			l_eer, l_min_dcf = sv_l([d_embeddings_all, d_embeddings_1, d_embeddings_2, d_embeddings_5], dic_eval_trial['voxceleb1_eval'], args)
-			metric_man.update_metric_l(epoch = 0, l_eer = l_eer, l_min_dcf = l_min_dcf, trial_type = 'voxceleb1_eval', args = args)
+			metric_man.update_metric_l(epoch = 0, l_eer = l_eer, l_min_dcf = l_min_dcf, trial_type = 'voxceleb1_eval')
 
 		torch.cuda.empty_cache()
 		dist.barrier()
@@ -201,11 +211,13 @@ def main_worker(gpu, ngpus_per_node, args, loader_args):
 				if eval_trial != 'voxceleb1_eval':
 					print(eval_trial)
 					eer, min_dcf = sv(d_embeddings_all, dic_eval_trial[eval_trial], args)
-					metric_man.update_metric(epoch = 0, eer = eer, min_dcf = min_dcf, trial_type = eval_trial, args = args)
+					metric_man.update_metric(epoch = 0, eer = eer, min_dcf = min_dcf, trial_type = eval_trial)
 			metric_man.f_result.close()
 
-
-	else:
+	#################
+	#Train the model#
+	#################
+	else:		
 		criterion = {}
 		#set ojbective funtions, optimizer and lr scheduler
 		if args.use_metric_l:
@@ -237,10 +249,9 @@ def main_worker(gpu, ngpus_per_node, args, loader_args):
 
 
 		for epoch in tqdm(range(args.epoch)):
-			#######
-			#Train#
-			#######
-
+			####################
+			#Training the model#
+			####################	
 			trnset_sampler.set_epoch(epoch)
 
 			train_model(model = model,
@@ -282,7 +293,7 @@ def main_worker(gpu, ngpus_per_node, args, loader_args):
 				d_embeddings_5 = dic_embd(l_all_ID[1], l_embd[3])
 
 				l_eer, l_min_dcf = sv_l([d_embeddings_all, d_embeddings_1, d_embeddings_2, d_embeddings_5], dic_eval_trial['voxceleb1_eval'], args)
-				metric_man.update_metric_l(epoch = epoch, l_eer = l_eer, l_min_dcf = l_min_dcf, trial_type = 'voxceleb1_eval', args = args)
+				metric_man.update_metric_l(epoch = epoch, l_eer = l_eer, l_min_dcf = l_min_dcf, trial_type = 'voxceleb1_eval')
 
 			torch.cuda.empty_cache()
 			dist.barrier()
@@ -312,7 +323,7 @@ def main_worker(gpu, ngpus_per_node, args, loader_args):
 					if eval_trial != 'voxceleb1_eval':
 						print(eval_trial)
 						eer, min_dcf = sv(d_embeddings_all, dic_eval_trial[eval_trial], args)
-						metric_man.update_metric(epoch = 0, eer = eer, min_dcf = min_dcf, trial_type = eval_trial, args = args)
+						metric_man.update_metric(epoch = 0, eer = eer, min_dcf = min_dcf, trial_type = eval_trial)
 				metric_man.f_result.close()
 
 if __name__ == '__main__':

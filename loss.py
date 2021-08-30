@@ -149,7 +149,7 @@ class GE2E(nn.Module):
 
 class AMSoftmax(nn.Module):
     def __init__(self, nOut, nClasses, margin=0.3, scale=15, **kwargs):
-        super(LossFunction, self).__init__()
+        super(AMSoftmax, self).__init__()
 
         self.test_normalize = True
         

@@ -80,8 +80,9 @@ def extract_speaker_embedding(model, db_gen, gpu):
 				nb_eval_utt = m_batch.shape[1]
 				m_batch = m_batch.cuda(gpu, non_blocking=True)
 				m_batch = m_batch.reshape(-1,1,m_batch.size(-1))
-		
+				
 				code = model(x = m_batch, is_test = True)
+				
 				if m_batch.size(-1) == 59049:
 					for i in range(int(code.size(0)/nb_eval_utt)):        
 						l_code = []
@@ -91,6 +92,7 @@ def extract_speaker_embedding(model, db_gen, gpu):
 						
 				else: l_embeddings.extend(code.cpu().numpy())
 				l_ID.extend(ID)
+				
 				pbar.update(1)
 
 		return l_embeddings, l_ID

@@ -49,8 +49,8 @@ def get_args():
     parser.add_argument("-max_seg_per_spk", default=500, type=int)
 
     #loss
-    parser.add_argument('-clf_l', type = str, default = 'none')
-    parser.add_argument('-metric_l', type = str, default = 'none')
+    parser.add_argument('-clf_l', type = str, default = 'softmax')
+    parser.add_argument('-metric_l', type = str, default = 'apro')
     parser.add_argument('-loss_margin', type = float, default = .2)
     parser.add_argument('-loss_scale', type = float, default = 30)
     parser.add_argument("-focal_alpha", default=2., type=float)

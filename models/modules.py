@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 
-
 class Gate_module(nn.Module):
 	def __init__(self, channels, bottleneck=128, nb_input=3):
 		super(Gate_module, self).__init__()
@@ -59,12 +58,26 @@ class Bottleneck(nn.Module):
 				cardinality_split = cardinality_split // 2
 				bottel_plane_split = bottel_plane_split // 2
 
-		if inplanes != planes: 
+		if inplanes != planes: # if change in number of filters
 			self.shortcut = nn.Sequential(
 				nn.Conv1d(inplanes, planes, kernel_size=1, stride=1, bias=False)
 			)
 
+		# medium resolution path (original branches)
+		self.conv1 = nn.Conv1d(inplanes, bottel_plane,
+							   kernel_size=1, bias=False)
+		self.bn1 = nn.BatchNorm1d(bottel_plane)
+		self.conv2 = nn.Conv1d(bottel_plane, bottel_plane, kernel_size=3,
+							   stride=stride, padding=dilation, bias=False,
+							   dilation=dilation, groups=cardinality)
+		self.bn2 = nn.BatchNorm1d(bottel_plane)
+		self.conv3 = nn.Conv1d(bottel_plane, planes,
+							   kernel_size=1, bias=False)
+		self.bn3 = nn.BatchNorm1d(planes)
+		self.relu = nn.ReLU(inplace=True)
+
 		if self.dsp:
+			# low resolution path (down-sampling + up-sampling branches)
 			self.pool = nn.AvgPool1d(3, stride=3)
 				
 			self.conv1_d= nn.Conv1d(
@@ -83,6 +96,7 @@ class Bottleneck(nn.Module):
 				planes, planes, kernel_size =3, stride=3, padding=0)
 
 			if self.up_path:
+				# high resolution path (up-sampling + down-sampling branches)
 				self.conv_t_u = nn.ConvTranspose1d(
 				inplanes, inplanes, kernel_size =3, stride=3, padding=0)
 
@@ -97,23 +111,11 @@ class Bottleneck(nn.Module):
 
 				self.conv3_u= nn.Conv1d(
 				bottel_plane_split, planes, kernel_size=1, bias=False)
-
+				
+				# Multi-head attention-based gate module
 				if self.gate: self.gate_moduel = Gate_module(planes, planes //3, nb_input = 3)
 			else: 
 				if self.gate: self.gate_moduel = Gate_module(planes, planes //2, nb_input = 2)
-		
-		self.conv1 = nn.Conv1d(inplanes, bottel_plane,
-							   kernel_size=1, bias=False)
-		self.bn1 = nn.BatchNorm1d(bottel_plane)
-		self.conv2 = nn.Conv1d(bottel_plane, bottel_plane, kernel_size=3,
-							   stride=stride, padding=dilation, bias=False,
-							   dilation=dilation, groups=cardinality)
-		self.bn2 = nn.BatchNorm1d(bottel_plane)
-		self.conv3 = nn.Conv1d(bottel_plane, planes,
-							   kernel_size=1, bias=False)
-		self.bn3 = nn.BatchNorm1d(planes)
-		self.relu = nn.ReLU(inplace=True)
-		self.stride = stride
 		
 		
 	def forward(self, x, residual=None):
@@ -122,25 +124,35 @@ class Bottleneck(nn.Module):
 		
 		out = self.conv1(x)
 		out = self.conv2(self.relu(self.bn1(out)))
-		out = self.conv3(self.relu(self.bn1(out)))
+		out = self.conv3(self.relu(self.bn2(out)))
 		
 		if self.dsp:
+			# down-sampling
 			x_d = self.pool(x)
+
 			out_d = self.conv1_d(x_d)
 			out_d = self.conv2_d(self.relu(self.bn1_d(out_d)))    
 			out_d = self.conv3_d(self.relu(self.bn2_d(out_d)))
+
+			# up-sampling
 			out_d = self.conv_t(out_d)
 
 			if self.up_path:
+				# up-sampling
 				x_u = self.conv_t_u(x)
+
 				out_u = self.conv1_u(x_u)
 				out_u = self.conv2_u(self.relu(self.bn1_u(out_u)))    
 				out_u = self.conv3_u(self.relu(self.bn2_u(out_u)))
+
+				# down-sampling
 				out_u = self.pool(out_u)
 				
+				# agregation of features using gate module
 				if self.gate: 
 					out_cat = torch.cat((out, out_d, out_u), 1)
 					out = self.gate_moduel(out_cat)
+				# agregation of features using element-wise summation
 				else: out += out_d + out_u
 
 			else:
@@ -154,69 +166,5 @@ class Bottleneck(nn.Module):
 
 		out += residual
 		out = self.relu(out)
-
-		return out
-
-
-
-class RawNetBottlenetBlockX(nn.Module):
-	"""
-	Basic block for RawNet architectures.
-	This block follows pre-activation[1].
-cdd
-	Arguments:
-	downsample  : perform reduction in the sequential(time) domain
-				  (different with shortcut)
-
-	Reference:
-	[1] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
-		Identity Mappings in Deep Residual Networks. arXiv:1603.05027
-	"""
-	expansion = 2
-	cardinality = 32
-
-	def __init__(self, inplanes, planes, downsample=None):
-		super(RawNetBottlenetBlockX, self).__init__()
-		self.downsample = downsample
-		cardinality = RawNetBottlenetBlockX.cardinality	#64
-		bottle_planes = planes * cardinality // 32		
-
-		#####
-		# core layers
-		#####
-		self.bn1 = nn.BatchNorm1d(inplanes)
-		self.conv1 = nn.Conv1d(
-			inplanes, bottle_planes, kernel_size=1, bias=False)
-		self.bn2 = nn.BatchNorm1d(bottle_planes)
-		self.conv2 = nn.Conv1d(
-			bottle_planes, bottle_planes, kernel_size=3, stride=1, padding=1, bias=False, groups=cardinality
-		)
-		self.bn3 = nn.BatchNorm1d(bottle_planes)
-		self.conv3 = nn.Conv1d(
-			bottle_planes, planes, kernel_size=1, bias=False)
-
-		self.mp = nn.MaxPool1d(3)
-		self.lrelu = nn.LeakyReLU(0.3)
-
-		#####
-		# settings
-		#####
-		if inplanes != planes:  # if change in number of filters
-			self.shortcut = nn.Sequential(
-				nn.Conv1d(inplanes, planes, kernel_size=1, stride=1, bias=False)
-			)
-
-	def forward(self, x):
-			
-		out = self.lrelu(self.bn1(x))
-		shortcut = self.shortcut(out) if hasattr(self, "shortcut") else x
-		out = self.conv1(out)
-		out = self.conv2(self.lrelu(self.bn2(out)))
-		out = self.conv3(self.lrelu(self.bn3(out)))
-
-		out = out + shortcut
-
-		if self.downsample:
-			out = self.mp(out)
 
 		return out
