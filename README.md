@@ -25,29 +25,18 @@ We used Nvidia GPU Cloud for conducting our experiments. We used the 'nvcr.io/nv
 We used VoxCeleb2 dataset for training and VoxCeleb1 dataset for test with three evaluation trials. 
 
 
-```
-예시
-```
-
 # Training
-
-아래 사항들로 현 프로젝트에 관한 모듈들을 설치할 수 있습니다.
 
 ```
 Go into run directory
-./run.sh
+./train.sh
 ```
 
 # Test
 
-어떻게 테스트가 이 시스템에서 돌아가는지에 대한 설명을 합니다
-
-### 테스트는 이런 식으로 동작합니다
-
-왜 이렇게 동작하는지, 설명합니다
-
 ```
-예시
+Go into run directory
+./test.sh
 ```
 
 # Citation
