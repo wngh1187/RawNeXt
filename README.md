@@ -1,4 +1,4 @@
-# RawNeXt: Speaker verification system for variable-duration utterance with deep layer aggregation and dynamic scaling policies
+# RawNeXt
 
 Pytorch code for following paper:
 
