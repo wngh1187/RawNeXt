@@ -4,8 +4,6 @@ import torch.nn as nn
 
 from .modules import *
 
-
-	
 class Root(nn.Module):
 	def __init__(self, in_channels, out_channels, kernel_size, residual):
 		super(Root, self).__init__()

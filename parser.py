@@ -19,7 +19,7 @@ def get_args():
     parser.add_argument("-model_name", type=str, required=True)
 
     #dir 
-    parser.add_argument('-save_dir', type = str, default = '/source/ECAPA_RawNet2/')
+    parser.add_argument('-save_dir', type = str, default = '/source/RawNeXt/')
     parser.add_argument('-DB_vox2', type = str, default = '/DB2/VoxCeleb2/')
     parser.add_argument('-DB_vox1_all', type = str, default = '/DB2/VoxCeleb1')
     parser.add_argument('-DB_vox1_eval', type = str, default = '/DB2/VoxCeleb1/eval_wav')

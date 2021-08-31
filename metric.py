@@ -21,7 +21,7 @@ class metric_manager(object):
         self.f_result.write('epoch:%d, %s, eval_eer_org:%.4f, eval_min_dcf_org:%.4f, eval_eer_1:%.4f, eval_min_dcf_1:%.4f, eval_eer_2:%.4f, eval_min_dcf_2:%.4f, eval_eer_5:%.4f, eval_min_dcf_5:%.4f\n'\
         %(epoch, trial_type, l_eer[0], l_min_dcf[0], l_eer[1], l_min_dcf[1], l_eer[2], l_min_dcf[2], l_eer[3], l_min_dcf[3]))
         
-        #record best validation model
+        #record best eer
         if self.best_eer[trial_type] > l_eer[0]:
             print('New best eer %s: %f'%(trial_type, float(l_eer[0])))
             self.best_eer[trial_type] = l_eer[0]
@@ -29,6 +29,7 @@ class metric_manager(object):
                 checkpoint = {'model': self.model.state_dict()}            
                 torch.save(checkpoint, self.save_dir +  'weights/checkpoint_best.pt')
 
+        #record best min_dcf
         if self.best_min_dcf[trial_type] > l_min_dcf[0]:
             print('New best mindcf %s: %f'%(trial_type, float(l_min_dcf[0])))
             self.best_min_dcf[trial_type] = l_min_dcf[0]
@@ -41,10 +42,10 @@ class metric_manager(object):
         print('\nepoch:%d, %s, eval_eer:%.4f, eval_min_dcf:%.4f\n'%(epoch, trial_type, eer, min_dcf))
         self.f_result.write('epoch:%d, %s, eval_eer:%.4f, eval_min_dcf:%.4f\n'%(epoch, trial_type, eer, min_dcf))
 
-        #record best validation model
         if self.best_eer[trial_type] > eer:
             print('New best eer %s: %f'%(trial_type, float(eer)))
             self.best_eer[trial_type] = eer
+            
         if self.best_min_dcf[trial_type] > min_dcf:
             print('New best mindcf %s: %f'%(trial_type, float(min_dcf)))
             self.best_min_dcf[trial_type] = min_dcf

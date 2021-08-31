@@ -49,7 +49,7 @@ def main():
 	loader_args = {}
 
 	#get utt_lists & define labels
-	loader_args['dev_lines'] = sorted(get_utt_list(args.DB_vox2))[:10000]
+	loader_args['dev_lines'] = sorted(get_utt_list(args.DB_vox2))
 	loader_args['vox1_all_lines'] = sorted(get_utt_list(args.DB_vox1_all))
 	loader_args['vox1_eval_lines'] = sorted(get_utt_list(args.DB_vox1_eval))  
 	
@@ -59,11 +59,8 @@ def main():
 	print('#vox_eval_lines: {}'.format(len(loader_args['vox1_eval_lines'])))
 	
 	#get label dictionary
-	
 	loader_args['d_label'], loader_args['l_label'], loader_args['d_spk2utt'] = make_d_label_spk2uttr(loader_args['dev_lines'])
-	
 	args.model['nb_spk'] = len(loader_args['l_label'])
-
 	mp.spawn(main_worker, nprocs=args.ngpus_per_node, args=(args.ngpus_per_node, args, loader_args))
 
 def main_worker(gpu, ngpus_per_node, args, loader_args):
@@ -104,21 +101,14 @@ def main_worker(gpu, ngpus_per_node, args, loader_args):
 	dist.init_process_group(backend='nccl', init_method='env://', world_size=args.world_size, rank=args.rank)
 
 	trnset_gen, trnset_sampler = get_train_loader(args, loader_args)
-	print('b')
-	for x,y in trnset_gen:
-		print('a')
-		print(x.shape)
-		print(y)
-		exit()
-	print('c')
+	
 	loader_args['list_eval_nb_sample'] =[-1, 1, 2, 5]
 	
 	l_evalset_gen = get_vox1_eval_loader_list(args, loader_args)
 	evalset_gen_vox1_all = get_vox1_all_loader(args, loader_args)
 	
 	args.nb_iter = len(trnset_gen)
-	print(args.nb_iter)
-	exit()
+	
 	#define model	
 	module = import_module("models.{}".format(args.module_name))
 	_model = getattr(module, args.model_name)

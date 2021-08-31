@@ -57,13 +57,14 @@ class Bottleneck(nn.Module):
 			if self.up_path:
 				cardinality_split = cardinality_split // 2
 				bottel_plane_split = bottel_plane_split // 2
-
-		if inplanes != planes: # if change in number of filters
+				
+		# if change in number of filters
+		if inplanes != planes: 
 			self.shortcut = nn.Sequential(
 				nn.Conv1d(inplanes, planes, kernel_size=1, stride=1, bias=False)
 			)
 
-		# medium resolution path (original branches)
+		# original resolution path (original branches)
 		self.conv1 = nn.Conv1d(inplanes, bottel_plane,
 							   kernel_size=1, bias=False)
 		self.bn1 = nn.BatchNorm1d(bottel_plane)
@@ -161,7 +162,6 @@ class Bottleneck(nn.Module):
 					out = self.gate_moduel(out_cat)
 				else: out += out_d
 		
-
 		out = self.bn3(out)
 
 		out += residual
