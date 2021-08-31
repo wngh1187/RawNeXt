@@ -44,9 +44,9 @@ class FocalLoss(nn.Module):
 	def forward(self, x, label):
 		
 		x = self.fc(x)
-		ce_loss = nn.functional.cross_entropy(x, label, reduction='none') # important to add reduction='none' to keep per-batch-item loss
+		ce_loss = nn.functional.cross_entropy(x, label, reduction='none') 
 		pt = torch.exp(-ce_loss)
-		nloss = (self.alpha * (1-pt)**self.gamma * ce_loss).mean() # mean over the batch
+		nloss = (self.alpha * (1-pt)**self.gamma * ce_loss).mean()
 		return nloss
 
 class AngleProto(nn.Module):
