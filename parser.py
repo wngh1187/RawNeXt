@@ -19,13 +19,13 @@ def get_args():
     parser.add_argument("-model_name", type=str, required=True)
 
     #dir 
-    parser.add_argument('-save_dir', type = str, default = '/source/RawNeXt/')
-    parser.add_argument('-DB_vox2', type = str, default = '/DB2/VoxCeleb2/')
-    parser.add_argument('-DB_vox1_all', type = str, default = '/DB2/VoxCeleb1')
-    parser.add_argument('-DB_vox1_eval', type = str, default = '/DB2/VoxCeleb1/eval_wav')
-    parser.add_argument('-trial_path', type = str, default = '/DB2/VoxCeleb1/vox1_trials')
-    parser.add_argument('-musan_path', type=str,   default="/DB2/musan_split/")
-    parser.add_argument('-rir_path',  type=str,   default="/DB2/rir_noises/simulated_rirs/")
+    parser.add_argument('-save_dir', type = str, default = './exps/')
+    parser.add_argument('-DB_vox2', type = str, default = './DB/VoxCeleb2/')
+    parser.add_argument('-DB_vox1_all', type = str, default = './DB/VoxCeleb1')
+    parser.add_argument('-DB_vox1_eval', type = str, default = './DB/VoxCeleb1/eval_wav')
+    parser.add_argument('-trial_path', type = str, default = './DB/VoxCeleb1/vox1_trials')
+    parser.add_argument('-musan_path', type=str,   default="./DB/musan_split/")
+    parser.add_argument('-rir_path',  type=str,   default="./DB/rir_noises/simulated_rirs/")
     parser.add_argument('-load_model_path', type=str, default="./weights/RawNeXt_aam.pt")
 
     #hyper-params
