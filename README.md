@@ -20,7 +20,7 @@ Experimental results on the VoxCeleb1 test set of various length demonstrate tha
 ## Environment Setting
 * We used Nvidia GPU Cloud for conducting our experiments. 
 * We used four Quadro rtx-5000 GPUs for training. 
-* nvcr.io/nvidia/pytorch:21.04-py3 image.
+* nvcr.io/nvidia/pytorch:21.04-py3 image
 * Python 3.6.9
 * Pytorch 1.8.1
 * Torchaudio 0.8.1
