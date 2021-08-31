@@ -27,7 +27,7 @@ Experimental results on the VoxCeleb1 test set of various length demonstrate tha
 ## Datasets
 
 We used VoxCeleb2 dataset for training and VoxCeleb1 dataset for test with three evaluation trials. 
-For data augmentation, We used  room impulse response simulation and MUSAN corpus.
+For data augmentation, we used room impulse response simulation and MUSAN corpus. 
 We referenced the data augementation code at [here]( https://github.com/clovaai/voxceleb_trainer )
 
 
