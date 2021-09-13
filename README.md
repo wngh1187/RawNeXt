@@ -10,10 +10,10 @@ Pytorch code for following paper:
 
 Despite achieving satisfactory performances in speaker verification due to deep neural networks, the variable-duration utterance still remains a challenge that threatens the robustness of system. 
 To deal with this issue, we propose a speaker verification system called ***RawNeXt*** that can handle input raw waveforms of arbitrary length by the following two components: 
-(1) A deep layer aggregation strategy enhances speaker information by iteratively and hierarchically aggregating features of various time scales output from stages and blocks. 
-(2) A dynamic scaling policy selectively merges the activations of the different resolution branches in each block according to the length of the utterance. 
-Owing to these two methods, our proposed model can extract speaker embeddings rich in time-frequency information by fully exploiting utterances and operating dynamically on length variation. 
-Experimental results on the VoxCeleb1 test set of various length demonstrate that the RawNeXt achieve state-of-the-art performance compared to the existing short utterance speaker verification systems. 
+(1) A deep layer aggregation strategy enhances speaker information by iteratively and hierarchically aggregating features of various time scales and frequency channels output from stages and blocks. 
+(2) A dynamic scaling policy flexibly manipulates features according to the length of the utterance by selectively merging the activations of different resolution branches in each block. 
+Owing to these two methods, our proposed model can extract speaker embeddings rich in time-frequency information and operate dynamically on length variation. 
+Experimental results on the VoxCeleb1 test set of various duration demonstrate that the RawNeXt achieves state-of-the-art performance compared to the recently proposed systems. 
 
 # Prerequisites
 
