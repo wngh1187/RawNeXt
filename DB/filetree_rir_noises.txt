@@ -1,0 +1,10 @@
+./rir_noises/
+├── simulated_rirs
+│   ├── largeroom
+│   │   ├── Room001
+│   │   │   ├── Room001-00001.wav
+│   │   │   ...  
+│   │   │   └── Room001-00100.wav
+│   └── ...
+
+603 directories, 60007 files

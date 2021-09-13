@@ -1,0 +1,27 @@
+./musan_split/
+├── music
+│   ├── fma
+│   │   ├── music-fma-0000
+│   │   │   ├── 00000.wav
+│   │   │   ...  
+│   │   │   └── 00291.wav
+│   └── ...
+├── noise
+│   ├── free-sound
+│   │   ├── noise-free-sound-0000
+│   │   │   ├── 00000.wav
+│   │   │   ├── 00003.wav
+│   │   │   ├── 00006.wav
+│   │   │   ├── 00009.wav
+│   │   │   └── 00012.wav
+│   └── ...
+│
+└── speech
+    ├── librivox
+    │   ├── speech-librivox-0000
+    │   │   ├── 00000.wav
+    │   │   ...  
+    │   │   └── 00438.wav
+    └── ...
+
+2028 directories, 128924 files

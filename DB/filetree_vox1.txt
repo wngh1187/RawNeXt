@@ -1,0 +1,24 @@
+./VoxCeleb1/
+├── dev_wav
+│   ├── id10001
+│   │   ├── 1zcIwhmdeo4
+│   │   │   ├── 00001.wav
+│   │   │   ├── 00002.wav
+│   │   │   └── 00003.wav
+│   └── ...
+├── eval_wav
+│   ├── id10270
+│   │   ├── 5r0dWxy17C8
+│   │   │   ├── 00001.wav
+│   │   │   ├── 00002.wav
+│   │   │   ├── 00003.wav
+│   │   │   ├── 00004.wav
+│   │   │   └── 00005.wav
+│   └── ...
+│
+└── vox1_trials
+    ├── voxceleb1_eval.txt
+    ├── voxceleb1_eval_E_cleaned.txt
+    └── voxceleb1_eval_H_cleaned.txt
+
+23750 directories, 153519 files
