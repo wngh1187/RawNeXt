@@ -2,7 +2,7 @@
 
 Pytorch code for following paper:
 
-* **Title** : RawNeXt: Speaker verification system for variable-duration utterance with deep layer aggregation and dynamic scaling policies (To be announced at ICASSP2022, now available [here]( https://arxiv.org/abs/2112.07935 )) 
+* **Title** : RawNeXt: Speaker verification system for variable-duration utterance with deep layer aggregation and dynamic scaling policies (Announced at ICASSP2022, now available [here]( https://arxiv.org/abs/2112.07935 )) 
 * **Autor** : Ju-ho Kim, Hye-jin Shim, Jungwoo Heo, and Ha-Jin Yu
 
 # Abstract
